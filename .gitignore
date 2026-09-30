@@ -1,0 +1,119 @@
+# Server (NextJS)
+/client/node_modules/
+/client/.pnp
+/client/.pnp.*
+/client/.yarn/*
+!/client/.yarn/patches
+!/client/.yarn/plugins
+!/client/.yarn/releases
+!/client/.yarn/versions
+
+# Testing
+/client/coverage/
+
+# Next.js
+/client/.next/
+/client/out/
+
+# Production
+/client/build/
+
+# Misc
+/client/.DS_Store
+/client/*.pem
+
+# Debug
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+/client/.pnpm-debug.log*
+
+# Environment files
+/client/.env*
+
+# Vercel
+/client/.vercel/
+
+# TypeScript
+/client/*.tsbuildinfo
+/client/next-env.d.ts
+
+# Server (NestJS)
+/server/dist/
+/server/node_modules/
+/server/build/
+
+# Logs
+/server/logs/
+/server/*.log
+/server/npm-debug.log*
+/server/pnpm-debug.log*
+/server/yarn-debug.log*
+/server/yarn-error.log*
+/server/lerna-debug.log*
+
+# OS
+/server/.DS_Store
+
+# Tests
+/server/coverage/
+/server/.nyc_output/
+
+# IDEs and editors
+/server/.idea/
+/server/.project
+/server/.classpath
+/server/.c9/
+/server/*.launch
+/server/.settings/
+/server/*.sublime-workspace
+
+# VS Code
+/server/.vscode/*
+!/server/.vscode/settings.json
+!/server/.vscode/tasks.json
+!/server/.vscode/launch.json
+!/server/.vscode/extensions.json
+
+# Environment files
+/server/.env
+/server/.env.development.local
+/server/.env.test.local
+/server/.env.production.local
+/server/.env.local
+
+# Temp directories
+/server/.temp/
+/server/.tmp/
+
+# Runtime data
+/server/pids/
+/server/*.pid
+/server/*.seed
+/server/*.pid.lock
+
+# Diagnostic reports
+/server/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Generated Prisma client
+/server/src/generated/prisma/
+
+# General
+.DS_Store
+Thumbs.db
+
+# Environment files anywhere in project
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Editor
+*.swp
+*.swo
+*~
+
+# OS / temporary
+*.tmp
+*.temp
+*.bak
