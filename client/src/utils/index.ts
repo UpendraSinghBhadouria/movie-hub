@@ -8,3 +8,7 @@ export const createSlug = (value: string) => {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
 };
+
+export const getMoviePoster = (slug: string) => {
+  return `/assets/movies/${slug}.jfif`;
+};

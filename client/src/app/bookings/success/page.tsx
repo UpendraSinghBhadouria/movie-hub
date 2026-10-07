@@ -30,6 +30,7 @@ import {
   formatCurrency,
   formatDate,
   formatTime,
+  getMoviePoster,
   getPaymentStatus,
   handleDownloadTicket,
 } from "@/utils";
@@ -315,7 +316,7 @@ export default function BookingSuccessPage() {
                   <div className="relative aspect-2/3 overflow-hidden rounded-2xl border bg-muted shadow-sm">
                     {booking.movie.posterUrl ? (
                       <img
-                        src={booking.movie.posterUrl}
+                        src={getMoviePoster(booking.movie.posterUrl)}
                         alt={booking.movie.title}
                         className="h-full w-full object-cover"
                       />

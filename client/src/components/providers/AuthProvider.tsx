@@ -1,107 +1,3 @@
-// "use client";
-
-// import {
-//   AUTH_QUERY_KEY,
-//   AuthContext,
-//   AuthContextValue,
-//   CurrentUser,
-//   LoginCredentials,
-// } from "@/context/auth-context";
-// import { loginRequest, logoutRequest, refreshRequest } from "@/lib/api/auth";
-// import { getErrorMessage } from "@/lib/getErrorMessage";
-// import { setAccessToken } from "@/lib/tokenManager";
-// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-// import { error } from "console";
-// import { useCallback, useMemo, useState } from "react";
-
-// export function AuthProvider({ children }: { children: React.ReactNode }) {
-//   const [isError, setIsError] = useState<string | null>(null);
-//   const queryClient = useQueryClient();
-
-//   const sessionQuery = useQuery({
-//     queryKey: AUTH_QUERY_KEY,
-
-//     queryFn: async () => {
-//       const response = await refreshRequest();
-
-//       const { accessToken, user } = response;
-//       setAccessToken(accessToken);
-
-//       return user;
-//     },
-
-//     /**
-//      * If refresh cookie doesn't exist or is invalid,
-//      * user is simply unauthenticated.
-//      */
-//     retry: false,
-//     refetchOnWindowFocus: false,
-//     staleTime: 5 * 60 * 1000,
-//   });
-
-//   const loginMutation = useMutation({
-//     mutationFn: loginRequest,
-
-//     onSuccess: (response) => {
-//       const { accessToken, user } = response;
-//       setAccessToken(accessToken);
-//       queryClient.setQueryData(AUTH_QUERY_KEY, user);
-//     },
-//     onError: (err) => {
-//       const errMsg = getErrorMessage(err);
-//       setIsError(errMsg);
-//     },
-//   });
-
-//   const logoutMutation = useMutation({
-//     mutationFn: logoutRequest,
-
-//     onSettled: () => {
-//       setAccessToken(null);
-//       queryClient.removeQueries({
-//         queryKey: AUTH_QUERY_KEY,
-//       });
-//     },
-//   });
-
-//   const login = useCallback(
-//     async (credentials: LoginCredentials): Promise<CurrentUser> => {
-//       const response = await loginMutation.mutateAsync(credentials);
-//       return response.user;
-//     },
-//     [loginMutation],
-//   );
-
-//   const logout = useCallback(async () => {
-//     await logoutMutation.mutateAsync();
-//   }, [logoutMutation]);
-
-//   const value = useMemo<AuthContextValue>(
-//     () => ({
-//       currentUser: sessionQuery.data ?? null,
-//       isAuthenticated: !!sessionQuery.data,
-//       isLoading:
-//         sessionQuery.isLoading ||
-//         loginMutation.isPending ||
-//         logoutMutation.isPending,
-//       isError,
-//       login,
-//       logout,
-//     }),
-//     [
-//       sessionQuery.data,
-//       sessionQuery.isLoading,
-//       loginMutation.isPending,
-//       logoutMutation.isPending,
-//       isError,
-//       login,
-//       logout,
-//     ],
-//   );
-
-//   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-// }
-
 "use client";
 
 import {
@@ -111,10 +7,14 @@ import {
   CurrentUser,
   LoginCredentials,
 } from "@/context/auth-context";
-import { loginRequest, logoutRequest, refreshSession } from "@/lib/api/auth";
-import api, { refreshAccessToken } from "@/lib/axios";
+
+import { loginRequest, logoutRequest } from "@/lib/api/auth";
+
+import { refreshAccessToken } from "@/lib/axios";
+
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import { setAccessToken } from "@/lib/tokenManager";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
 
@@ -123,67 +23,112 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const queryClient = useQueryClient();
 
+  /**
+   * --------------------------------------------------------
+   * Restore existing session
+   * --------------------------------------------------------
+   *
+   * On application startup:
+   *
+   * 1. Access token may be missing because it is stored
+   *    only in memory.
+   *
+   * 2. Browser still has the HttpOnly refresh cookie.
+   *
+   * 3. refreshAccessToken() sends the refresh request.
+   *
+   * 4. New access token is stored in memory.
+   *
+   * 5. Current user is stored in React Query.
+   */
   const sessionQuery = useQuery({
     queryKey: AUTH_QUERY_KEY,
 
     queryFn: async () => {
-      console.log("[AUTH] Refresh started");
+      const response = await refreshAccessToken();
 
-      const response = await refreshSession<CurrentUser>();
-
-      console.log("[AUTH] Refresh response:", response);
-
-      setAccessToken(response.accessToken);
-
-      console.log("[AUTH] Access token stored");
-      console.log("[AUTH] User:", response.user);
-
-      return response.user;
+      return response.user as CurrentUser;
     },
 
     /**
-     * If refresh cookie doesn't exist or is invalid,
-     * user is simply unauthenticated.
+     * If refresh token is missing/expired/invalid,
+     * don't retry automatically.
      */
     retry: false,
 
+    /**
+     * Don't automatically refresh the session whenever
+     * browser window gets focus.
+     */
     refetchOnWindowFocus: false,
 
+    /**
+     * Treat the current user as fresh for 5 minutes.
+     */
     staleTime: 5 * 60 * 1000,
   });
 
+  /**
+   * --------------------------------------------------------
+   * Login
+   * --------------------------------------------------------
+   */
   const loginMutation = useMutation({
     mutationFn: loginRequest,
 
     onSuccess: (response) => {
       const { accessToken, user } = response;
 
+      /**
+       * Store access token in memory.
+       */
       setAccessToken(accessToken);
 
+      /**
+       * Store current user in React Query.
+       */
       queryClient.setQueryData(AUTH_QUERY_KEY, user);
 
       setIsError(null);
     },
 
-    onError: (err) => {
-      const errMsg = getErrorMessage(err);
+    onError: (error) => {
+      const errorMessage = getErrorMessage(error);
 
-      setIsError(errMsg);
+      console.log("Login error:", errorMessage);
+
+      setIsError(errorMessage);
     },
   });
 
+  /**
+   * --------------------------------------------------------
+   * Logout
+   * --------------------------------------------------------
+   */
   const logoutMutation = useMutation({
     mutationFn: logoutRequest,
 
     onSettled: () => {
+      /**
+       * Remove access token from memory.
+       */
       setAccessToken(null);
 
+      /**
+       * Remove authenticated user from React Query.
+       */
       queryClient.removeQueries({
         queryKey: AUTH_QUERY_KEY,
       });
     },
   });
 
+  /**
+   * --------------------------------------------------------
+   * Public login function
+   * --------------------------------------------------------
+   */
   const login = useCallback(
     async (credentials: LoginCredentials): Promise<CurrentUser> => {
       const response = await loginMutation.mutateAsync(credentials);
@@ -193,10 +138,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [loginMutation],
   );
 
+  /**
+   * --------------------------------------------------------
+   * Public logout function
+   * --------------------------------------------------------
+   */
   const logout = useCallback(async () => {
     await logoutMutation.mutateAsync();
   }, [logoutMutation]);
 
+  /**
+   * --------------------------------------------------------
+   * Auth context value
+   * --------------------------------------------------------
+   */
   const value = useMemo<AuthContextValue>(
     () => ({
       currentUser: sessionQuery.data ?? null,

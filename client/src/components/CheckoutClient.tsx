@@ -30,7 +30,8 @@ import { PayButton } from "./PayButton";
 import { getLockId } from "@/lib/seatLock";
 import { useSeatContext } from "@/hooks/useSeatContext";
 import { useMemo, useState } from "react";
-import { formatDate, formatTime } from "@/utils";
+import { formatDate, formatTime, getMoviePoster } from "@/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 type CheckoutClientProps = {
   data: ShowSeatResponse | null;
@@ -45,6 +46,7 @@ export default function CheckoutClient({ data }: CheckoutClientProps) {
   const [selectedOffer, setSelectedOffer] = useState<number | null>(null);
 
   const { selectedSeats } = useSeatContext();
+  const { currentUser } = useAuth();
   const tickets = useMemo<TicketSummary[]>(() => {
     if (!data?.seats || selectedSeats.length === 0) {
       return [];
@@ -245,7 +247,7 @@ export default function CheckoutClient({ data }: CheckoutClientProps) {
                   <div className="relative h-56 w-full shrink-0 overflow-hidden bg-muted sm:h-auto sm:w-36 lg:w-40">
                     {movie.posterUrl && (
                       <img
-                        src={movie.posterUrl}
+                        src={getMoviePoster(movie.posterUrl)}
                         alt={movie.title}
                         className="h-full w-full object-cover"
                       />
@@ -501,11 +503,13 @@ export default function CheckoutClient({ data }: CheckoutClientProps) {
                       </div>
 
                       <div>
-                        <p className="text-sm font-medium">Your Account</p>
+                        <p className="text-sm font-medium">
+                          {currentUser?.email}
+                        </p>
 
                         <p className="flex items-center gap-1 text-xs text-muted-foreground">
                           <Phone className="size-3" />
-                          Logged-in user
+                          {currentUser?.mobile ?? "N/A"}
                         </p>
                       </div>
                     </div>

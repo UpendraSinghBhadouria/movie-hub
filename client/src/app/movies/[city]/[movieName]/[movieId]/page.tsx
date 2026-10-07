@@ -3,6 +3,7 @@ import { theatres } from "@/constants";
 import { getErrorMessage } from "@/lib/getErrorMessage";
 import serverApi from "@/lib/serverApi";
 import { Movie } from "@/types";
+import { getMoviePoster } from "@/utils";
 import { Share2, Star } from "lucide-react";
 import Image from "next/image";
 
@@ -60,7 +61,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src={movie.posterUrl}
+            src={getMoviePoster(movie.posterUrl)}
             alt=""
             fill
             priority
@@ -85,7 +86,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
             <div className="mx-auto w-48 shrink-0 sm:w-56 md:mx-0 md:w-64 lg:w-72">
               <div className="relative aspect-2/3 overflow-hidden rounded-xl border border-white/20 shadow-2xl">
                 <Image
-                  src={movie.posterUrl}
+                  src={getMoviePoster(movie.posterUrl)}
                   alt={movie.title}
                   fill
                   priority

@@ -15,7 +15,7 @@ type BannerSliderProps = {
   banners: StaticImageData[];
 };
 
-const AUTOPLAY_DELAY = 4000;
+const AUTOPLAY_DELAY = 3000;
 
 export function BannerSlider({ banners }: BannerSliderProps) {
   const [api, setApi] = useState<CarouselApi>();

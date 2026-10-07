@@ -1,6 +1,7 @@
 import { Booking } from "@/types/booking.types";
 import jsPDF from "jspdf";
 import QRCode from "qrcode";
+import { getMoviePoster } from ".";
 
 export function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-IN", {
@@ -81,16 +82,18 @@ function getPdfImageUrl(url: string) {
   // Convert to:
   // /image/upload/f_jpg/m12_atveia.jpg
 
-  if (url.includes("res.cloudinary.com")) {
-    return url
-      .replace("/image/upload/", "/image/upload/f_jpg/")
-      .replace(/\.avif$/i, ".jpg");
-  }
+  const moviePosterUrl = getMoviePoster(url);
+  // if (url.includes("res.cloudinary.com")) {
+  //   return url
+  //     .replace("/image/upload/", "/image/upload/f_jpg/")
+  //     .replace(/\.avif$/i, ".jpg");
+  // }
 
-  return url;
+  return moviePosterUrl;
 }
 
 export const handleDownloadTicket = async (booking: Booking) => {
+  console.log("handleDownloadTicket called with booking:", booking);
   if (!booking) return;
 
   try {

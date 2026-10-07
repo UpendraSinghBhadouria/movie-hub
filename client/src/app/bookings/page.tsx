@@ -44,6 +44,7 @@ import {
   formatDate,
   formatTime,
   getDisplayStatus,
+  getMoviePoster,
 } from "@/utils";
 import { useRouter } from "next/navigation";
 
@@ -280,7 +281,7 @@ function BookingCard({ booking }: { booking: Booking }) {
           <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-xl bg-muted sm:h-40 sm:w-28">
             {booking.movie.posterUrl ? (
               <Image
-                src={booking.movie.posterUrl}
+                src={getMoviePoster(booking.movie.posterUrl)}
                 alt={booking.movie.title}
                 fill
                 className="

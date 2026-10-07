@@ -35,6 +35,14 @@ export function Navbar() {
 
   const { currentUser, isAuthenticated, logout } = useAuth();
   const router = useRouter();
+  const userInitials =
+    currentUser?.name
+      ?.trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((name) => name.charAt(0).toUpperCase())
+      .join("") || "U";
 
   const handleSelect = (location: "bookings" | "profile") => {
     router.push(`/${location}`);
@@ -47,12 +55,12 @@ export function Navbar() {
         {/* Left Section */}
         <div className="flex items-center gap-6">
           {/* Logo */}
-          <a
+          <Link
             href="/"
             className="text-2xl font-bold tracking-tight text-primary"
           >
             Movie<span className="text-primary/60">Hub</span>
-          </a>
+          </Link>
 
           {/* Search */}
           <div className="hidden w-100 md:block">
@@ -210,7 +218,7 @@ export function Navbar() {
   "
                 aria-label="Open user menu"
               >
-                <span>US</span>
+                <span>{userInitials}</span>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent align="end" className="w-64">

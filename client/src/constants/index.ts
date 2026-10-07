@@ -1,7 +1,7 @@
-import banner1 from "../assets/banner1.jpg";
-import banner2 from "../assets/banner2.avif";
-import banner3 from "../assets/banner3.avif";
-import banner4 from "../assets/banner4.avif";
+import banner1 from "../../public/assets/banners/banner1.avif";
+import banner2 from "../../public/assets/banners/banner2.avif";
+import banner3 from "../../public/assets/banners/banner3.avif";
+import banner4 from "../../public/assets/banners/banner4.avif";
 import m1 from "../assets/m1.avif";
 import m2 from "../assets/m2.avif";
 import m3 from "../assets/m3.avif";
@@ -22,7 +22,7 @@ import e5 from "../assets/e5.avif";
 import inox from "../assets/inox.avif";
 import pvr from "../assets/pvr.avif";
 import cinepolis from "../assets/cinepolis.avif";
-import { Booking, Offer, Seat, SeatSection } from "@/types";
+import { Offer } from "@/types";
 
 export const languages = [
   "Hindi",
@@ -370,27 +370,6 @@ export const countryCodes = [
   // Add more if needed
 ];
 
-export const seatSections: SeatSection[] = [
-  {
-    category: "normal",
-    label: "Normal",
-    price: 220,
-    description: "Regular seats",
-  },
-  {
-    category: "executive",
-    label: "Executive",
-    price: 320,
-    description: "Executive seats",
-  },
-  {
-    category: "premium",
-    label: "Premium",
-    price: 420,
-    description: "Premium seats",
-  },
-];
-
 export const dates = [
   {
     day: "24",
@@ -419,49 +398,6 @@ export const dates = [
   },
 ];
 
-export const seats: Seat[] = [
-  // Premium
-  ...["A", "B"].flatMap((row) =>
-    Array.from({ length: 10 }, (_, index) => ({
-      id: `${row}${index + 1}`,
-      row,
-      number: index + 1,
-      category: "normal" as const,
-      status: ["A4", "A5", "B7"].includes(`${row}${index + 1}`)
-        ? ("booked" as const)
-        : ("available" as const),
-    })),
-  ),
-
-  // Executive
-  ...["C", "D", "E"].flatMap((row) =>
-    Array.from({ length: 10 }, (_, index) => ({
-      id: `${row}${index + 1}`,
-      row,
-      number: index + 1,
-      category: "executive" as const,
-      status: ["C3", "C4", "D8", "E2", "E3"].includes(`${row}${index + 1}`)
-        ? ("booked" as const)
-        : ("available" as const),
-    })),
-  ),
-
-  // Normal
-  ...["F", "G", "H", "I"].flatMap((row) =>
-    Array.from({ length: 12 }, (_, index) => ({
-      id: `${row}${index + 1}`,
-      row,
-      number: index + 1,
-      category: "premium" as const,
-      status: ["F5", "F6", "G9", "H2", "H3", "I10"].includes(
-        `${row}${index + 1}`,
-      )
-        ? ("booked" as const)
-        : ("available" as const),
-    })),
-  ),
-];
-
 export const offers: Offer[] = [
   {
     id: 1,
@@ -482,52 +418,3 @@ export const offers: Offer[] = [
     code: "WEEKEND75",
   },
 ];
-
-// Dummy booking data for now.
-// Replace this later with your API/store data.
-export const booking: Booking = {
-  movie: {
-    title: "Dune: Part Two",
-    posterUrl: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
-    certificate: "UA",
-    languages: ["English"],
-    genres: ["Sci-Fi, Adventure"],
-  },
-
-  theatre: {
-    name: "PVR INOX",
-    location: "DB City Mall, Bhopal",
-  },
-
-  show: {
-    date: "26 Sep 2026",
-    time: "07:30 PM",
-    screen: "Screen 4",
-  },
-
-  tickets: [
-    {
-      category: "Premium",
-      seats: ["F6", "F7"],
-      quantity: 2,
-      price: 420,
-    },
-  ],
-
-  cancellation: {
-    allowed: false,
-    message: "Tickets once booked cannot be cancelled or refunded.",
-  },
-
-  customer: {
-    name: "Upendra Singh",
-    mobile: "+91 98765 43210",
-  },
-
-  pricing: {
-    ticketAmount: 840,
-    convenienceFee: 42,
-    taxes: 76,
-    discount: 100,
-  },
-};

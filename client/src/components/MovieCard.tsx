@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import { Movie } from "@/types";
 import { useRouter } from "next/navigation";
 import { useLocation } from "@/hooks/useLocation";
-import { createSlug } from "@/utils";
+import { createSlug, getMoviePoster } from "@/utils";
 
 type MovieCardProps = {
   movie: Movie;
@@ -29,7 +29,7 @@ export function MovieCard({ movie }: MovieCardProps) {
         onClick={handleNavigation}
       >
         <Image
-          src={movie.posterUrl}
+          src={getMoviePoster(movie.posterUrl)}
           alt={movie.title}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"

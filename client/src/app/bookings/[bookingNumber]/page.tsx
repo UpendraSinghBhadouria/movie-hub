@@ -26,6 +26,7 @@ import api from "@/lib/axios";
 import { cn } from "@/lib/utils";
 
 import type { Booking } from "@/types/booking.types";
+import { getMoviePoster, handleDownloadTicket } from "@/utils";
 
 const getBooking = async (bookingNumber: string): Promise<Booking> => {
   const response = await api.get(`/bookings/${bookingNumber}`);
@@ -165,6 +166,7 @@ export default function BookingDetailsPage() {
           </Button>
 
           <Button
+            onClick={() => handleDownloadTicket(booking)}
             variant="outline"
             className="hidden border-pink-200 hover:bg-pink-50 hover:text-pink-700 sm:flex dark:border-pink-900 dark:hover:bg-pink-950/40"
           >
@@ -225,7 +227,7 @@ export default function BookingDetailsPage() {
                 <div className="h-32 w-22 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-40 sm:w-28">
                   {booking.movie.posterUrl ? (
                     <img
-                      src={booking.movie.posterUrl}
+                      src={getMoviePoster(booking.movie.posterUrl)}
                       alt={booking.movie.title}
                       className="h-full w-full object-cover"
                     />
@@ -494,6 +496,7 @@ export default function BookingDetailsPage() {
 
               {/* Mobile download */}
               <Button
+                onClick={() => handleDownloadTicket(booking)}
                 variant="outline"
                 className="mt-7 w-full border-pink-200 hover:bg-pink-50 hover:text-pink-700 sm:hidden dark:border-pink-900 dark:hover:bg-pink-950/40"
               >
