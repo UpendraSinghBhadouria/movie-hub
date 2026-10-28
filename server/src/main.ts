@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: 'https://movie-hub-booking.vercel.app',
     credentials: true,
   });
   app.setGlobalPrefix('api');
