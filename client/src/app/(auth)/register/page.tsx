@@ -1,5 +1,6 @@
 import { AuthShell } from "@/components/auth/AuthShell";
 import { RegisterForm } from "@/components/auth/RegisterForm";
+import { Suspense } from "react";
 
 export default function RegisterPage() {
   return (
@@ -10,7 +11,9 @@ export default function RegisterPage() {
       footerLinkText="Sign in"
       footerLinkHref="/login"
     >
-      <RegisterForm />
+      <Suspense fallback={<div className="h-48 animate-pulse" />}>
+        <RegisterForm />
+      </Suspense>
     </AuthShell>
   );
 }

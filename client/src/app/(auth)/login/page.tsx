@@ -1,5 +1,6 @@
 import { AuthShell } from "@/components/auth/AuthShell";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
@@ -10,7 +11,9 @@ export default function LoginPage() {
       footerLinkText="Create an account"
       footerLinkHref="/register"
     >
-      <LoginForm />
+      <Suspense fallback={<div className="h-48 animate-pulse" />}>
+        <LoginForm />
+      </Suspense>
     </AuthShell>
   );
 }
