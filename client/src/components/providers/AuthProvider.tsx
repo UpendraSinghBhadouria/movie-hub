@@ -8,7 +8,12 @@ import {
   LoginCredentials,
 } from "@/context/auth-context";
 
-import { loginRequest, logoutRequest } from "@/lib/api/auth";
+import {
+  loginRequest,
+  logoutRequest,
+  RegisterCredentials,
+  registerRequest,
+} from "@/lib/api/auth";
 
 import { refreshAccessToken } from "@/lib/axios";
 
@@ -101,6 +106,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
   });
 
+  const registerMutation = useMutation({
+    mutationFn: registerRequest,
+
+    onSuccess: (response) => {
+      const { accessToken, user } = response;
+
+      /**
+       * Store access token in memory.
+       */
+      setAccessToken(accessToken);
+
+      /**
+       * Store current user in React Query.
+       */
+      queryClient.setQueryData(AUTH_QUERY_KEY, user);
+
+      setIsError(null);
+    },
+
+    onError: (error) => {
+      const errorMessage = getErrorMessage(error);
+
+      console.log("Register error:", errorMessage);
+
+      setIsError(errorMessage);
+    },
+  });
+
   /**
    * --------------------------------------------------------
    * Logout
@@ -138,6 +171,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [loginMutation],
   );
 
+  const register = useCallback(
+    async (credentials: RegisterCredentials): Promise<CurrentUser> => {
+      const response = await registerMutation.mutateAsync(credentials);
+      return response.user;
+    },
+    [registerMutation],
+  );
+
   /**
    * --------------------------------------------------------
    * Public logout function
@@ -161,12 +202,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading:
         sessionQuery.isLoading ||
         loginMutation.isPending ||
+        registerMutation.isPending ||
         logoutMutation.isPending,
 
       isError,
 
       login,
-
+      register,
       logout,
     }),
     [
@@ -174,8 +216,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       sessionQuery.isLoading,
       loginMutation.isPending,
       logoutMutation.isPending,
+      registerMutation.isPending,
       isError,
       login,
+      register,
       logout,
     ],
   );

@@ -2,7 +2,7 @@ import { io, Socket } from "socket.io-client";
 
 const SOCKET_URL =
   process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/api\/?$/, "") ??
-  "http://localhost:8000";
+  "https://movie-hub-edbk.onrender.com";
 
 let socket: Socket | null = null;
 

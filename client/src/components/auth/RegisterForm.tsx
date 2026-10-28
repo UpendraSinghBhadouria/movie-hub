@@ -19,9 +19,12 @@ import {
   registerSchema,
   type RegisterFormValues,
 } from "@/lib/validations/auth";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export function RegisterForm() {
   const [showPassword, setShowPassword] = React.useState(false);
+  const { register, isLoading, isError } = useAuth();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -33,16 +36,20 @@ export function RegisterForm() {
     },
   });
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const onSubmit = async (values: RegisterFormValues) => {
     console.log("Register values:", values);
 
-    // Connect your NestJS registration API here later.
-    //
-    // Example:
-    //
-    // const response = await api.post("/auth/register", values);
-    //
-    // router.push("/login");
+    try {
+      await register(values);
+
+      const redirect = searchParams.get("redirect");
+      router.replace(redirect || "/");
+    } catch (error) {
+      console.error("Register failed:", error);
+    }
   };
 
   return (

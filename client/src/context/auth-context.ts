@@ -1,5 +1,6 @@
 "use client";
 
+import { RegisterCredentials } from "@/lib/api/auth";
 import { createContext } from "react";
 
 export type CurrentUser = {
@@ -23,6 +24,7 @@ export type AuthContextValue = {
   isLoading: boolean;
   isError: string | null;
   login: (credentials: LoginCredentials) => Promise<CurrentUser>;
+  register: (credentials: RegisterCredentials) => Promise<CurrentUser>;
   logout: () => Promise<void>;
 };
 

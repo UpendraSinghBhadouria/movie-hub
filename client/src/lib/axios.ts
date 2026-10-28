@@ -25,7 +25,7 @@ let refreshPromise: Promise<RefreshResponse> | null = null;
  * API client
  */
 const api: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:8000/api",
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL ?? "https://movie-hub-edbk.onrender.com/api",
 
   /**
    * Required for the HttpOnly refresh-token cookie.

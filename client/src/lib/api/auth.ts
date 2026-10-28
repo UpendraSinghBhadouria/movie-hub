@@ -6,11 +6,25 @@ export type AuthResponse = {
   user: CurrentUser;
 };
 
+export type RegisterCredentials = {
+  name: string;
+  email: string;
+  password: string;
+  mobile?: string | null;
+};
+
 export const loginRequest = async (
   credentials: LoginCredentials,
 ): Promise<AuthResponse> => {
   const response = await api.post<AuthResponse>("/auth/login", credentials);
 
+  return response.data;
+};
+
+export const registerRequest = async (
+  credentials: RegisterCredentials,
+): Promise<AuthResponse> => {
+  const response = await api.post<AuthResponse>("/auth/register", credentials);
   return response.data;
 };
 
